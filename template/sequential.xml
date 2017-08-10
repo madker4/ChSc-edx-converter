@@ -1,0 +1,5 @@
+<sequential display_name="{{name_unit}}">
+  {% for step_url in step_list %}
+  <vertical url_name="{{step_url}}"/>
+  {% endfor %}
+</sequential>

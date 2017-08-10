@@ -1,0 +1,3 @@
+<vertical display_name="{{step_name}}">
+  <html url_name="{{step_url}}"/>
+</vertical>
