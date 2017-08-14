@@ -4,10 +4,10 @@ from bs4 import BeautifulSoup
 
 class Unit:
 
-    def __init__(self, name, description):
+    def __init__(self, name, description,order):
         self.name = name
         self.description = description
-        self.order = int(name.split(u'.')[0])
+        self.order = order
         self.step_list = list()
         self.attachment = dict()
 
@@ -54,7 +54,9 @@ def pars_store_area():
         'tags': '[[Окружающий мир. 1й класс]] unit'})
     unit_all = list()
     for unit in units_tags:
-        unit_all.append(Unit(name=unit['title'], description=unit.pre.text))
+        unit_all.append(Unit(name=unit['title'],
+                             description=unit.pre.text,
+                             order=unit['oms']))
     for unit in unit_all:
         tags = '[[' + unit.name + ']] unitStep'
         steps_tag = soup.find_all('div', attrs={'tags': tags})
@@ -87,11 +89,31 @@ def pars_store_area():
                         precis = param_str[2]
         unit.add_attachment(precis=precis[2:], manual=manual[2:])
     unit_sort = sorted(unit_all, key=lambda unit: unit.order)
-    return unit_sort
+    title_tags = soup.find_all('div', attrs={
+        'tags': '[[Окружающий мир. 1й класс]] [[заголовок 1 надуровня]]'})
+    title_list = list()
+    for t in title_tags:
+        title = {'name': t['title'],
+                 'num': t['oms']}
+        title_list.append(title)
+    title_list = sorted(title_list, key=lambda title: int(title['num']))
+    return unit_sort, title_list
 
 pars_store_area()
 
 
+# def sobr_stor():
+#     f = open('/home/madker4/Документы/курсы пам/дети и наука фул/standalone.html','r')
+#     soup = BeautifulSoup(f, 'html.parser')
+#     body = soup.body.find(id='storeArea')
+#     # tags = re.compile('Окружающий мир\. 1й класс')
+#     # store = body.find_all(tags = re.compile(u'Окружающий мир\. 1й класс'))
+#     wr = open('storeArea.html', 'a')
+#     wr.write(str(body))
+#     # for s in store:
+#     #     wr.write(str(s))
+#
+# sobr_stor()
 
 
 
