@@ -1,3 +1,3 @@
-<vertical display_name="{{step_name}}">
-  <html url_name="{{step_url}}"/>
+<vertical display_name="{{name}}">
+  <{{type}} url_name="{{url}}"/>
 </vertical>

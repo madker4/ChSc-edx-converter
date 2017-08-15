@@ -4,12 +4,13 @@ from bs4 import BeautifulSoup
 
 class Unit:
 
-    def __init__(self, name, description,order):
+    def __init__(self, name, description, order):
         self.name = name
         self.description = description
-        self.order = order
+        self.order = int(order)
         self.step_list = list()
         self.attachment = dict()
+        self.url = None
 
     def add_step(self, step):
         self.step_list.append(step)
@@ -17,9 +18,6 @@ class Unit:
     def add_attachment(self, precis, manual):
         self.attachment = {'precis_link': precis,
                            'manual_link': manual}
-
-    def sorting(self):
-        self.step_list = sorted(self.step_list, key=lambda x: x.counter)
 
     def __str__(self):
         unit = {'name': self.name.encode('utf-8'),
@@ -36,6 +34,8 @@ class Step:
         self.visible_name = visible_name
         self.tags = tags
         self.counter = int(counter)
+        self.url = None
+        self.url_block = None
 
     def __str__(self):
         step = {'name': self.name,
@@ -72,7 +72,7 @@ def pars_store_area():
                     type_step = param_str[2]
                 if param_str[1] == u'visibleName':
                     visible_name = param_str[2]
-            step = Step(name=st['title'], type_step=type_step, link=link,
+            step = Step(name=st['title'], type_step=type_step, link=link[2:],
                         visible_name=visible_name, tags=tags, counter=count)
             unit.add_step(step)
         tags_att = '[[' + unit.name + ']] attachment'
@@ -88,13 +88,13 @@ def pars_store_area():
                     else:
                         precis = param_str[2]
         unit.add_attachment(precis=precis[2:], manual=manual[2:])
-    unit_sort = sorted(unit_all, key=lambda unit: unit.order)
+    unit_sort = sorted(unit_all, key=lambda unit: int(unit.order))
     title_tags = soup.find_all('div', attrs={
         'tags': '[[Окружающий мир. 1й класс]] [[заголовок 1 надуровня]]'})
     title_list = list()
     for t in title_tags:
         title = {'name': t['title'],
-                 'num': t['oms']}
+                 'num': int(t['oms'])}
         title_list.append(title)
     title_list = sorted(title_list, key=lambda title: int(title['num']))
     return unit_sort, title_list

@@ -1,5 +1,5 @@
-<chapter display_name="{{name_section}}">
-  {% for unit_url in units %}
-  <sequential url_name="{{unit_url}}"/>
+<chapter display_name="{{name}}">
+  {% for url in units_url %}
+  <sequential url_name="{{url}}"/>
   {% endfor %}
 </chapter>
