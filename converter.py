@@ -62,6 +62,7 @@ def create_chapters(env, titles, units):
             u.url = url_generate()
             titles[title_len-1]['units_url'].append(u.url)
     for t in titles:
+        t['name'] = t['name'].replace('&nbsp;',' ')
         chapt = chapt_tmplt.render(t)
         name_file = 'course/chapter/' + t['url'].encode('utf-8') + '.xml'
         write_file(name_file, chapt)
