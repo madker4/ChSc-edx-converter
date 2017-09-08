@@ -1,0 +1,5 @@
+<course advanced_modules="[&quot;slif&quot;]" cert_html_view_enabled="true" display_name="{{name}}" language="en" start="&quot;2030-01-01T00:00:00+00:00&quot;">
+  {% for chapter in chapters %}
+  <chapter url_name="{{chapter.url}}"/>
+  {% endfor %}
+</course>

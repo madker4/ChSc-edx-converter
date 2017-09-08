@@ -1,0 +1,42 @@
+{
+    "course/course": {
+        "advanced_modules": [
+            "slif"
+        ], 
+        "cert_html_view_enabled": true, 
+        "discussion_topics": {
+            "\u041e\u0431\u0449\u0435\u0435": {
+                "id": "course"
+            }
+        }, 
+        "display_name": "ChSci", 
+        "language": "ru",
+        "start": "2030-01-01T00:00:00Z", 
+        "tabs": [
+            {
+                "name": "Courseware", 
+                "type": "courseware"
+            }, 
+            {
+                "name": "Course Info", 
+                "type": "course_info"
+            }, 
+            {
+                "name": "Textbooks", 
+                "type": "textbooks"
+            }, 
+            {
+                "name": "Discussion", 
+                "type": "discussion"
+            }, 
+            {
+                "name": "Wiki", 
+                "type": "wiki"
+            }, 
+            {
+                "name": "Progress", 
+                "type": "progress"
+            }
+        ]
+    }
+}
