@@ -31,7 +31,7 @@ class Step:
         self.name = name
         self.type = type_step
         self.link = link
-        self.visible_name = visible_name
+        self.visible_name = visible_name.replace('&amp;nbsp;',' ')
         self.tags = tags
         self.counter = int(counter)
         self.url = None

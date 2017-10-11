@@ -30,8 +30,11 @@ def write_file(name, template):
 
 def create_standart_file(env):
     course_tmpl = env.get_template('course.xml')
+    policies_tmpl = env.get_template('./policies/course/policy.json')
     tmplt = course_tmpl.render(org_name='ChSc', course_num='CS9999')
+    policy = policies_tmpl.render()
     write_file('course/course.xml', tmplt)
+    write_file('course/policies/course/policy.json', policy)
 
 
 def url_generate():
@@ -89,7 +92,9 @@ def create_vertical(env, step_list):
             type_block = s.type
         elif s.type == u'pager':
             type_block = 'html'
-        else: type_block = 'task'
+        elif s.type == u'task':
+            create_task_block(env, s)
+            continue
         vert = vert_tmpl.render(name=s.visible_name.replace('&nbsp;', ' '),
                                 type=type_block, url=s.url_block)
         name_file = 'course/vertical/' + s.url.encode('utf-8') + '.xml'
@@ -97,6 +102,7 @@ def create_vertical(env, step_list):
         create_block(env, s)
         copy_pager_file('/home/madker4/Документы/курсы пам/дети и наука фул/',
                         s)
+
 
 
 def create_block(env, step):
@@ -127,6 +133,48 @@ def create_html_block(env, step):
     write_file(name_xml, xml)
 
 
+def create_task_block(env, step):
+    task_tmpl = env.get_template('task.xml')
+    source_name = step.visible_name.replace('&nbsp;', '_').replace(' ', '_').replace('?', '_',)
+    source = source_name + '.html'
+    task = task_tmpl.render(block_url=url_generate(),
+                            name=step.visible_name.replace('&nbsp;', ' '),
+                            source=source)
+    name_file = 'course/vertical/' + step.url.encode('utf-8') + '.xml'
+    print name_file
+    write_file(name_file, task)
+    copy_task_file(step)
+
+
+def copy_task_file(step):
+    task_dir = '/home/madker4/Документы/курсы пам/дети и наука фул/' + step.link[:-10].encode('utf-8')
+    task_file = open(task_dir + 'index.html','r') #добавить проверку существования файла
+    task_lines = task_file.readlines()
+    for index, value in enumerate(task_lines):
+        if value.find('../../_Commons/widgets/1.0.1/style.css') > 0:
+            task_lines[index] = value.replace('../../_Commons/widgets/1.0.1/', '')
+            continue
+        elif value.find('../../_Commons/widgets/1.0.1/production.min.js') > 0:
+            task_lines[index] = value.replace('../../_Commons/widgets/1.0.1/', '')
+            continue
+        elif value.find('url(images/') > 0:
+            task_lines[index] = value.replace('url(images/', 'url(')
+    name_file = 'course/static/' + step.visible_name.replace('&nbsp;', ' ') + '.html'
+    new_task_file = open(name_file, 'w')
+    for line in task_lines:
+        new_task_file.write(line)
+    copy_task_img(task_dir)
+
+
+def copy_task_img(task_dir):
+    img_dir = task_dir + 'images/' #проверка существования папки
+    if not os.path.isdir(img_dir):
+        return None
+    img_list = os.listdir(img_dir)
+    for img in img_list:
+        sh.copy(img_dir + img, './course/static')
+
+
 def copy_pager_file(path_course, step):
     if step.type == u'pager':
         full_file_name = path_course + step.link.encode('utf-8')
@@ -141,6 +189,13 @@ def copy_attachment(path_course, unit):
         sh.copy(manual_name, './course/static')
     if os.path.isfile(precis_name):
         sh.copy(precis_name, './course/static')
+    copy_task_lib()
+
+
+def copy_task_lib():
+    path = '/home/madker4/Документы/курсы пам/дети и наука фул/_Commons/widgets/1.0.1/'
+    sh.copy(path + 'style.css', './course/static')
+    sh.copy(path + 'production.min.js', './course/static')
 
 
 create_direcories()
@@ -154,15 +209,3 @@ create_standart_file(env)
 create_course_xml(env, titles)
 create_chapters(env, titles, units)
 create_seq(env, units)
-
-
-
-
-
-
-
-
-
-
-
-
