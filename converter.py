@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from parser import Unit,Step,pars_store_area
+from parser import Unit, Step,pars_store_area
 from jinja2 import FileSystemLoader, Environment
 import os
 import random as rand
@@ -29,15 +29,17 @@ def write_file(name, template):
 
 
 def create_standart_file(env):
+    '''Сreating files with basic course settings. '''
     course_tmpl = env.get_template('course.xml')
     policies_tmpl = env.get_template('./policies/course/policy.json')
     tmplt = course_tmpl.render(org_name='ChSc', course_num='CS9999')
-    policy = policies_tmpl.render()
+    policy = policies_tmpl.render(org_name='ChSc')
     write_file('course/course.xml', tmplt)
     write_file('course/policies/course/policy.json', policy)
 
 
 def url_generate():
+    '''internal block url generator'''
     word = list('qwertyuioplkjhgfdsazxcvbnm741852963')
     rand.shuffle(word)
     url = ''
@@ -47,12 +49,14 @@ def url_generate():
 
 
 def create_course_xml(env, titles):
+    '''file root course'''
     course_tmpl = env.get_template('course/course.xml')
     tmplt = course_tmpl.render(chapters=titles, name='ChildSci')
     write_file('course/course/course.xml', tmplt)
 
 
 def create_chapters(env, titles, units):
+    '''Раздел в edx'''
     chapt_tmplt = env.get_template('chapter.xml')
     title_len = len(titles)
     for u in units:
@@ -72,6 +76,7 @@ def create_chapters(env, titles, units):
 
 
 def create_seq(env, units):
+    '''Подраздел в edx'''
     seq_tmpl = env.get_template('sequential.xml')
     for u in units:
         for s in u.step_list:
@@ -80,11 +85,13 @@ def create_seq(env, units):
         name_file = 'course/sequential/' + u.url.encode('utf-8') + '.xml'
         write_file(name_file, seq)
         create_vertical(env, u.step_list)
+        # PATH
         copy_attachment('/home/madker4/Документы/курсы пам/дети и наука фул/',
                         u)
 
 
 def create_vertical(env, step_list):
+    '''Блок в edx'''
     vert_tmpl = env.get_template('vertical.xml')
     for s in step_list:
         s.url_block = url_generate()
@@ -100,12 +107,13 @@ def create_vertical(env, step_list):
         name_file = 'course/vertical/' + s.url.encode('utf-8') + '.xml'
         write_file(name_file, vert)
         create_block(env, s)
+        #PATH
         copy_pager_file('/home/madker4/Документы/курсы пам/дети и наука фул/',
                         s)
 
 
-
 def create_block(env, step):
+    '''Компонент в блоке'''
     if step.type == u'video':
         create_video_block(env, step)
     elif step.type == u'pager':
@@ -134,6 +142,7 @@ def create_html_block(env, step):
 
 
 def create_task_block(env, step):
+    '''js component'''
     task_tmpl = env.get_template('task.xml')
     source_name = step.visible_name.replace('&nbsp;', '_').replace(' ', '_').replace('?', '_',)
     source = source_name + '.html'
@@ -147,6 +156,11 @@ def create_task_block(env, step):
 
 
 def copy_task_file(step):
+    '''
+    Copying files required for js task.
+    WARNING: change paths to files and paths to sources in html
+    '''
+    # PATH
     task_dir = '/home/madker4/Документы/курсы пам/дети и наука фул/' + step.link[:-10].encode('utf-8')
     task_file = open(task_dir + 'index.html','r') #добавить проверку существования файла
     task_lines = task_file.readlines()
@@ -183,6 +197,7 @@ def copy_pager_file(path_course, step):
 
 
 def copy_attachment(path_course, unit):
+    '''copying of methodological materials'''
     manual_name = path_course + unit.attachment['manual_link'].encode('utf-8')
     precis_name = path_course + unit.attachment['precis_link'].encode('utf-8')
     if os.path.isfile(manual_name):
@@ -193,6 +208,8 @@ def copy_attachment(path_course, unit):
 
 
 def copy_task_lib():
+    '''copy css and js lib for js task'''
+    #PATH
     path = '/home/madker4/Документы/курсы пам/дети и наука фул/_Commons/widgets/1.0.1/'
     sh.copy(path + 'style.css', './course/static')
     sh.copy(path + 'production.min.js', './course/static')

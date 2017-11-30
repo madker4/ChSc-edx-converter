@@ -3,6 +3,13 @@ from bs4 import BeautifulSoup
 
 
 class Unit:
+    '''
+    Lesson Children Sc
+
+    :param order: serial number lessons
+    :param step_list: list elements lessons
+    :param attachemnt: path to methodological materials
+    '''
 
     def __init__(self, name, description, order):
         self.name = name
@@ -27,6 +34,13 @@ class Unit:
 
 
 class Step:
+    '''
+    elements lessons
+
+    :param tags: tag lessons
+    :param counter: number step in lessons
+
+    '''
     def __init__(self, name, type_step, link, visible_name, tags, counter):
         self.name = name
         self.type = type_step
@@ -48,6 +62,7 @@ class Step:
 
 
 def pars_store_area():
+    #Specify the root file of the course
     f = open('storeArea.html', 'r')
     soup = BeautifulSoup(f, 'html.parser')
     units_tags = soup.find_all('div', attrs={
@@ -101,19 +116,6 @@ def pars_store_area():
 
 pars_store_area()
 
-
-# def sobr_stor():
-#     f = open('/home/madker4/Документы/курсы пам/дети и наука фул/standalone.html','r')
-#     soup = BeautifulSoup(f, 'html.parser')
-#     body = soup.body.find(id='storeArea')
-#     # tags = re.compile('Окружающий мир\. 1й класс')
-#     # store = body.find_all(tags = re.compile(u'Окружающий мир\. 1й класс'))
-#     wr = open('storeArea.html', 'a')
-#     wr.write(str(body))
-#     # for s in store:
-#     #     wr.write(str(s))
-#
-# sobr_stor()
 
 
 

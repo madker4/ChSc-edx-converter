@@ -9,7 +9,7 @@
                 "id": "course"
             }
         }, 
-        "display_name": "ChSci", 
+        "display_name": {{org_name}},
         "language": "ru",
         "start": "2030-01-01T00:00:00Z", 
         "tabs": [
